@@ -78,5 +78,7 @@
       type = "app";
       program = "${startPostgres}/bin/start-postgres";
     };
+
+    defaultApp.x86_64-linux = self.apps.x86_64-linux.postgres;
   };
 }
