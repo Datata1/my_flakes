@@ -14,8 +14,8 @@
   export PGLOCKDIR=$(pwd)/pglockdir
   export PGSOCKETDIR=$(pwd)/pgsocket
   export PGPASSWORD=$(openssl rand -base64 32)
-  export LANG="en_US.UTF-8"
-  export LC_ALL="en_US.UTF-8"
+  export LANG="C.UTF-8"
+  export LC_ALL="C.UTF-8"
 
 
   # Verzeichnisse erstellen
@@ -73,8 +73,8 @@
 
       shellHook = ''
         export LOCALE_ARCHIVE="${pkgs.glibcLocales}/lib/locale/locale-archive"
-        export LANG="en_US.UTF-8"
-        export LC_ALL="en_US.UTF-8"
+        export LANG="C.UTF-8"
+        export LC_ALL="C.UTF-8"
         echo "Welcome to your development shell!"
         echo "PostgreSQL is running in the background on port 3000"
         ${startPostgres}/bin/start-postgres
