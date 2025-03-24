@@ -68,6 +68,7 @@
       buildInputs = [
         pkgs.postgresql
         pkgs.openssl
+        pkgs.glibcLocales
       ];
 
       shellHook = ''
