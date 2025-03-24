@@ -71,6 +71,7 @@
       ];
 
       shellHook = ''
+        export LOCALE_ARCHIVE="${pkgs.glibcLocales}/lib/locale/locale-archive"
         export LANG="en_US.UTF-8"
         export LC_ALL="en_US.UTF-8"
         echo "Welcome to your development shell!"
