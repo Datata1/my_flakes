@@ -46,7 +46,7 @@
     fi
     
     echo "listen_addresses = '*' # Allow TCP connections" >> "$PGDATA/postgresql.conf"
-    echo "port = 3000" >> "$PGDATA/postgresql.conf"
+    echo "port = 5432" >> "$PGDATA/postgresql.conf"
   fi
 
   echo "Starting PostgreSQL on port $PGPORT..."
