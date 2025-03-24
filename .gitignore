@@ -1,0 +1,5 @@
+pgdata/
+pglockdir/
+pgsocket/
+*.log
+logfile
