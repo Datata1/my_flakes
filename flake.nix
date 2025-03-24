@@ -14,6 +14,9 @@
   export PGLOCKDIR=$(pwd)/pglockdir
   export PGSOCKETDIR=$(pwd)/pgsocket
   export PGPASSWORD=$(openssl rand -base64 32)
+  export LANG="en_US.UTF-8"
+  export LC_ALL="en_US.UTF-8"
+
 
   # Verzeichnisse erstellen
   mkdir -p "$PGDATA" "$PGLOCKDIR" "$PGSOCKETDIR"
@@ -24,7 +27,7 @@
   chmod 700 "$PGSOCKETDIR"
   
   # Setze den Besitzer der Verzeichnisse auf den aktuellen Benutzer
-  chown $(whoami):$(whoami) "$PGDATA" "$PGLOCKDIR" "$PGSOCKETDIR"
+  chown "$(whoami):$(id -gn)" "$PGDATA" "$PGLOCKDIR" "$PGSOCKETDIR"
 
   # Überprüfen, ob die Datenbank bereits initialisiert wurde
   if [ ! -f "$PGDATA/PG_VERSION" ]; then
