@@ -10,7 +10,7 @@
     startPostgres = pkgs.writeShellScriptBin "start-postgres" ''
   export PGDATA=$(pwd)/pgdata
   export PGHOST="localhost"
-  export PGPORT=3000
+  export PGPORT=5432
   export PGLOCKDIR=$(pwd)/pglockdir
   export PGSOCKETDIR=$(pwd)/pgsocket
   export PGPASSWORD=$(openssl rand -base64 32)
@@ -76,7 +76,7 @@
         export LANG="C.UTF-8"
         export LC_ALL="C.UTF-8"
         echo "Welcome to your development shell!"
-        echo "PostgreSQL is running in the background on port 3000"
+        echo "PostgreSQL is running in the background on port 5432"
         ${startPostgres}/bin/start-postgres
       '';
     };
