@@ -71,6 +71,8 @@
       ];
 
       shellHook = ''
+        export LANG="en_US.UTF-8"
+        export LC_ALL="en_US.UTF-8"
         echo "Welcome to your development shell!"
         echo "PostgreSQL is running in the background on port 3000"
         ${startPostgres}/bin/start-postgres
