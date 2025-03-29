@@ -15,6 +15,8 @@
       # for dev purposes set default passowrd
       export PGPASSWORD="devpassword"
       # export PGPASSWORD=$(${pkgs.openssl}/bin/openssl rand -base64 32)
+      export LANG="C.UTF-8"
+      export LC_ALL="C.UTF-8"
       
       mkdir -p "$PGDATA" "$PGLOCKDIR" "$PGSOCKETDIR"
 
