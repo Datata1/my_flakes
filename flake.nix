@@ -12,7 +12,9 @@
       export PGPORT=5432
       export PGLOCKDIR=$(pwd)/pglockdir
       export PGSOCKETDIR=$(pwd)/pgsocket
-      export PGPASSWORD=$(${pkgs.openssl}/bin/openssl rand -base64 32)
+      # for dev purposes set default passowrd
+      export PGPASSWORD="devpassword"
+      # export PGPASSWORD=$(${pkgs.openssl}/bin/openssl rand -base64 32)
 
       mkdir -p "$PGDATA" "$PGLOCKDIR" "$PGSOCKETDIR"
 
