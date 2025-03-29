@@ -15,9 +15,13 @@
       # for dev purposes set default passowrd
       export PGPASSWORD="devpassword"
       # export PGPASSWORD=$(${pkgs.openssl}/bin/openssl rand -base64 32)
-
+      
       mkdir -p "$PGDATA" "$PGLOCKDIR" "$PGSOCKETDIR"
 
+      DB_USER=$(whoami)
+      DB_NAME="$DB_USER"
+
+      # --- initdb ---
       if [ ! -f "$PGDATA/PG_VERSION" ]; then
         echo "Initializing database..."
         
@@ -32,16 +36,48 @@
         fi
       fi
 
+      # --- PostgreSQL Server starten ---
       echo "Starting PostgreSQL on port $PGPORT..."
       ${pkgs.postgresql}/bin/postgres -D "$PGDATA" -p "$PGPORT" -k "$PGSOCKETDIR" &
+      POSTGRES_PID=$! 
 
-      trap "echo 'Stopping PostgreSQL...'; ${pkgs.postgresql}/bin/pg_ctl -D $PGDATA stop" EXIT
+      # --- Warten bis Server bereit ist ---
+      echo "Waiting for PostgreSQL server to accept connections..."
+      MAX_TRIES=15
+      COUNT=0
+      while ! ${pkgs.postgresql}/bin/pg_isready -h localhost -p $PGPORT -U "$DB_USER" -q; do
+        if ! kill -0 $POSTGRES_PID 2>/dev/null; then
+          echo "PostgreSQL process $POSTGRES_PID died unexpectedly during startup."
+          exit 1
+        fi
+        sleep 1
+        COUNT=$((COUNT + 1))
+        if [ $COUNT -ge $MAX_TRIES ]; then
+            echo "PostgreSQL server did not become ready in time."
+            exit 1
+        fi
+      done
+      echo "PostgreSQL server is ready."
 
-      echo "Waiting for PostgreSQL to start..."
-      sleep 2
+      # --- Anwendungsdatenbank erstellen (falls nicht vorhanden) ---
+      echo "Checking/Creating database '$DB_NAME'..."
+      ${pkgs.postgresql}/bin/psql -h localhost -p $PGPORT -U "$DB_USER" -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname = '$DB_NAME'" | grep -q 1 || \
+        ${pkgs.postgresql}/bin/psql -h localhost -p $PGPORT -U "$DB_USER" -d postgres -c "CREATE DATABASE \"$DB_NAME\";"
 
-      echo "PostgreSQL started and password set."
-      tail -f /dev/null  
+      echo "Database '$DB_NAME' is ready for connections."
+      echo "PostgreSQL running with PID $POSTGRES_PID. User: $DB_USER, DB: $DB_NAME, Port: $PGPORT"
+
+      # --- Auf Beendigung warten & Aufräumen ---
+      cleanup() {
+          echo "Received signal, stopping PostgreSQL (PID $POSTGRES_PID)..."
+          kill -TERM $POSTGRES_PID
+          wait $POSTGRES_PID
+          echo "PostgreSQL stopped."
+      }
+      trap cleanup INT TERM EXIT
+
+      wait $POSTGRES_PID
+      echo "PostgreSQL process $POSTGRES_PID exited."
     '';
 
   in {
