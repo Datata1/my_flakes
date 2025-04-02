@@ -66,6 +66,10 @@
       ${pkgs.postgresql}/bin/psql -h localhost -p $PGPORT -U "$DB_USER" -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname = '$DB_NAME'" | grep -q 1 || \
         ${pkgs.postgresql}/bin/psql -h localhost -p $PGPORT -U "$DB_USER" -d postgres -c "CREATE DATABASE \"$DB_NAME\";"
 
+      # --- TimescaleDB Extension installieren ---
+      echo "Installing TimescaleDB extension..."
+      ${pkgs.postgresql}/bin/psql -h localhost -p $PGPORT -U "$DB_USER" -d "$DB_NAME" -c "CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;"
+
       echo "Database '$DB_NAME' is ready for connections."
       echo "PostgreSQL running with PID $POSTGRES_PID. User: $DB_USER, DB: $DB_NAME, Port: $PGPORT"
 
