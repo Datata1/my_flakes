@@ -91,6 +91,7 @@
     devShell.x86_64-linux = pkgs.mkShell {
       buildInputs = [
         pkgs.postgresql
+        pkgs.postgresql17Packages.timescaledb
         pkgs.openssl
         pkgs.glibcLocales
       ];
